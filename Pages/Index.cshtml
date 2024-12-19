@@ -1,0 +1,74 @@
+﻿@page
+@model FInal_Exam.Pages.Index
+@{
+    ViewData["Title"] = "Room Listings";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Room Search</h1>
+    <p>Filter and search available rooms.</p>
+</div>
+
+<div class="input-group mb-3">
+    <label class="input-group-text" for="searchBy">Search By</label>
+    <select class="form-select" id="searchBy" asp-for="SearchParams.SearchBy">
+        <option value="">Choose...</option>
+        <option value="RoomNumber">Room Number</option>
+        <option value="Type">Type</option>
+        <option value="Capacity">Capacity</option>
+        <option value="IsAvailable">Availability</option>
+    </select>
+
+    <input type="text" id="keyword" class="form-control" asp-for="SearchParams.Keyword" placeholder="Search...">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="search()">Search</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Room Number</th>
+            <th scope="col">Type</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">Availability</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in Model.Rooms)
+        {
+            <tr>
+                <td>@room.RoomNumber</td>
+                <td>@room.Type</td>
+                <td>@room.Capacity</td>
+                <td>@room.IsAvailable ? "Available" : "Not Available"</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        @if (Model.SearchParams.PageIndex > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Page("./Index", new { pageIndex = Model.SearchParams.PageIndex - 1 })">Previous</a>
+            </li>
+        }
+        <li class="page-item active">
+            <span class="page-link">@Model.SearchParams.PageIndex</span>
+        </li>
+        @if (Model.SearchParams.PageIndex < Model.SearchParams.PageCount)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Page("./Index", new { pageIndex = Model.SearchParams.PageIndex + 1 })">Next</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@section Scripts {
+    <script>
+        function search() {
+            window.location = "?searchBy=" + $("#searchBy").val() + "&keyword=" + $("#keyword").val();
+        }
+    </script>
+}
